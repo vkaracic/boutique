@@ -44,6 +44,9 @@ module.exports = {
   chainWebpack(config) {
     config.resolve.alias.merge(aliases);
     config.resolve.extensions.merge(extensions);
+    config.optimization
+      .splitChunks({ chunks: 'all' })
+      .runtimeChunk(true);
   },
   devServer
 };
