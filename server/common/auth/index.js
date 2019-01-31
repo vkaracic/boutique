@@ -11,11 +11,11 @@ const jwtOptions = {
   secretOrKey: config.secret
 };
 
-passport.use(new Strategy(jwtOptions, (payload, done) => {
-  return User.findById(payload.id)
-    .then(user => done(null, user || false))
-    .error(err => done(err, false));
-}));
+passport.use(new Strategy(jwtOptions, verify));
+passport.use('token', new Strategy({
+  ...jwtOptions,
+  jwtFromRequest: ExtractJwt.fromUrlQueryParameter('token')
+}, verify));
 
 passport.serializeUser((user, done) => done(null, user));
 passport.deserializeUser((user, done) => done(null, user));
@@ -30,3 +30,9 @@ module.exports = {
     return passport.authenticate(strategy, { ...options, failWithError: true });
   }
 };
+
+function verify(payload, done) {
+  return User.findById(payload.id)
+    .then(user => done(null, user || false))
+    .error(err => done(err, false));
+}

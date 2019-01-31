@@ -102,6 +102,10 @@ function resetPassword({ body, params }, res) {
     .then(() => res.end());
 }
 
+function getProfile({ user }, res) {
+  return res.jsend.success(user.profile);
+}
+
 async function bulkImport({ body, file, origin }, res) {
   const users = (await Datasheet.load(file)).toJSON({ include: inputAttrs });
   const errors = await User.import(users, { origin: origin });
@@ -121,5 +125,6 @@ module.exports = {
   login,
   invite,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  getProfile
 };
